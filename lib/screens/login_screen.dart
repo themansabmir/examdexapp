@@ -1,5 +1,6 @@
-import 'package:examdexapp/screens/signup_screen.dart';
+import 'package:examdexapp/screens/otpscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,120 +10,123 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool pass = false;
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.black,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20),
+
             const Text(
-              'LOG IN',
-              textAlign: TextAlign.center,
+              'Welcome back!',
+              style: TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 12),
+
+            const Text(
+              'Enter your number to continue your \n journey',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
+                height: 1.3,
               ),
             ),
-            const SizedBox(height: 48),
-            _buildTextField(hintText: 'Email', obscureText: false),
-            const SizedBox(height: 16),
-            _buildTextField(hintText: 'Password', obscureText: true),
-            const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                onTap: () {
-                  // TODO: Implement Forgot Password logic
-                  print('Forgot Password tapped');
-                },
-                child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+            SizedBox(height: screenHeight * 0.05),
+            Text('Phone Number'),
+            IntlPhoneField(
+              keyboardType: TextInputType.phone,
+              focusNode: FocusNode(),
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
+                //labelText: 'Phone Number',
+                border: OutlineInputBorder(borderSide: BorderSide()),
               ),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Implement Login logic
+              initialCountryCode: 'IN',
+              onChanged: (phone) {
+                if (phone.completeNumber.characters.length == 12) {
+                  setState(() {
+                    pass = true;
+                  });
+                }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF39FF14), // Neon Green
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+            ),
+            SizedBox(height: 26),
+            if (pass == true)
+              Center(
+                child: TextButton(
+                  onPressed:
+                      pass
+                          ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OtpScreen(),
+                              ),
+                            );
+                          }
+                          : null, // null = disabled button
+                  style: TextButton.styleFrom(
+                    minimumSize: Size(screenWidth * 0.8, 50),
+                    backgroundColor: const Color.fromARGB(255, 164, 172, 237),
+                    foregroundColor: const Color.fromARGB(187, 252, 252, 255),
+                  ),
+                  child: const Text("Continue"),
                 ),
               ),
-              child: const Text(
-                'Login',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
+            const Spacer(flex: 1),
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.lock,
+                    size: screenWidth * 0.035,
+                    color: const Color.fromARGB(255, 162, 164, 184),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Your data is safe with us. We only use youe',
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.03,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 10, 21, 105),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 24),
+
+            SizedBox(height: screenHeight * 0.008),
+
             Center(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SignUpScreen(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'Not a user? Sign Up',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.grey,
-                  ),
+              child: Text(
+                'number for secure login',
+                style: TextStyle(
+                  fontSize: screenWidth * 0.03,
+                  color: const Color.fromARGB(255, 11, 21, 102),
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required String hintText,
-    required bool obscureText,
-  }) {
-    return TextField(
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: const Color(0xFF39FF14), // Neon Green
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey),
-        filled: true,
-        fillColor: Colors.grey[900],
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 20,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30), // Circular border
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(
-            color: Color(0xFF39FF14),
-            width: 2,
-          ), // Neon Green border
         ),
       ),
     );
